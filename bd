@@ -1,0 +1,63 @@
+import mysql.connector
+import mysql.connector.errors
+
+class BD:
+    _connection = None 
+    
+    def criarConexao(self):
+        try:
+            if self._connection is not None:
+             return self._connection
+            else: 
+                self._connection = mysql.connector.connect(
+                    host='localhost',
+                    port='3306',
+                    user='root',
+                    password="",
+                    database="lista"
+                )
+                return self._connection
+        except mysql.connector.erros.ProgrammingError as error:
+         print("Erro de integridade: ", error)
+         
+    def fecharConexao(self):
+        self._connection.close()
+        self._connection = None 
+           
+    def buscaContatos(self):
+        self.criarConexao()
+        cursor = self._connection.cursor()
+        
+        cursor.execute("select * from lista")
+        result = cursor.fetchall()
+        
+        contatos = []
+        
+        if len(result) > 0:
+            for contato in result:
+                contatos.append(
+                    {
+                        "nome": contato[0],
+                        "numero": contato[1],
+                        "cidade": contato[2]
+                    }
+                )
+        self.fecharConexao()
+        
+        return contatos
+
+def deletarContato(self, numero): 
+    self.criarConexao()
+    cursor = self._connection.cursor()
+        
+    cursor.execute(f"delete from lista where numero = {numero}")
+    self._connection.commit()
+    
+    self.fecharConexao()
+    
+def adicionarContato(self, nome, numero, cidade):
+    self.criarConexao()
+    cursor = self._connection.cursor()
+    
+    cursor.execute(f"insert into lista values('{nome}','{numero}','{cidade}')")
+    self
